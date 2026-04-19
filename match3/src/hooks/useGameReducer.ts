@@ -1,13 +1,20 @@
 import { useReducer, useCallback } from 'react';
-import { GameState, GameAction, Position } from '../types/game';
+import { GameState, GameAction, Position, ElementType } from '../types/game';
 import { getLevelConfig } from '../utils/levelConfig';
 import { findMatches, wouldCreateMatch, calculateScore } from '../utils/matchFinder';
-import { swapElements, fillGaps, removeMatches } from '../utils/boardFiller';
-import { useBoardGenerator } from './useBoardGenerator';
+import { generateBoard, swapElements, fillGaps, removeMatches } from '../utils/boardFiller';
+import { hasValidMoves } from '../utils/matchFinder';
+
+function createBoard(): (ElementType | null)[][] {
+  let board = generateBoard();
+  while (!hasValidMoves(board)) {
+    board = generateBoard();
+  }
+  return board;
+}
 
 function createInitialState(level: number): GameState {
   const config = getLevelConfig(level);
-  const { createBoard } = useBoardGenerator();
 
   return {
     board: createBoard(),

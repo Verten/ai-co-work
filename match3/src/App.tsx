@@ -16,8 +16,9 @@ export default function App() {
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {
-      if (state.selectedCell) {
-        const [selectedRow, selectedCol] = state.selectedCell;
+      const selected = state.selectedCell;
+      if (selected) {
+        const [selectedRow, selectedCol] = selected;
 
         // Check if adjacent
         const isAdjacent =
@@ -36,21 +37,21 @@ export default function App() {
         selectCell(row, col);
       }
     },
-    [state.selectedCell, selectCell, swapCells]
+    [selectCell, swapCells] // state.selectedCell accessed via closure
   );
 
   const handleNextLevel = useCallback(() => {
     startLevel(state.level + 1);
     setScreen('game');
-  }, [state.level, startLevel]);
+  }, [startLevel]);
 
   const handleReplay = useCallback(() => {
     startLevel(state.level);
-  }, [state.level, startLevel]);
+  }, [startLevel]);
 
   const handleRetry = useCallback(() => {
     startLevel(state.level);
-  }, [state.level, startLevel]);
+  }, [startLevel]);
 
   const handleLevelSelect = useCallback(
     (level: number) => {
