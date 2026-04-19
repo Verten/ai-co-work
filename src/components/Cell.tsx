@@ -11,7 +11,7 @@ interface CellProps {
   onClick: () => void;
 }
 
-export const Cell: React.FC<CellProps> = ({ type, row, col, isSelected, onClick }) => {
+export const Cell: React.FC<CellProps> = ({ type, isSelected, onClick }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}

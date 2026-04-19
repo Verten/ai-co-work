@@ -5,8 +5,6 @@ import { findMatches, wouldCreateMatch, calculateScore } from '../utils/matchFin
 import { swapElements, fillGaps, removeMatches } from '../utils/boardFiller';
 import { useBoardGenerator } from './useBoardGenerator';
 
-const BOARD_SIZE = 10;
-
 function createInitialState(level: number): GameState {
   const config = getLevelConfig(level);
   const { createBoard } = useBoardGenerator();

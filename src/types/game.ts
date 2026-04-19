@@ -26,9 +26,9 @@ export interface GameState {
 
 export type GameAction =
   | { type: 'SELECT_CELL'; row: number; col: number }
-  | { type: 'SWAP_ELEMENTS'; pos1: [number, number]; pos2: [number, number] }
-  | { type: 'PROCESS_MATCHES'; matches: [number, number][] }
-  | { type: 'FALL_ELEMENTS'; updates: { from: [number, number]; to: [number, number] }[] }
+  | { type: 'SWAP_ELEMENTS'; pos1: Position; pos2: Position }
+  | { type: 'PROCESS_MATCHES'; matches: Position[] }
+  | { type: 'FALL_ELEMENTS'; updates: { from: Position; to: Position }[] }
   | { type: 'REFILL_BOARD' }
   | { type: 'DECREMENT_MOVES' }
   | { type: 'CHECK_GAME_STATUS' }
