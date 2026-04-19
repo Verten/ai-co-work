@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GameBoard } from './components/GameBoard';
 import { GameHeader } from './components/GameHeader';
@@ -14,56 +14,50 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('levelSelect');
   const { state, selectCell, swapCells, startLevel } = useGameReducer();
 
-  const handleCellClick = useCallback(
-    (row: number, col: number) => {
-      const selected = state.selectedCell;
-      if (selected) {
-        const [selectedRow, selectedCol] = selected;
+  const handleCellClick = (row: number, col: number) => {
+    const selected = state.selectedCell;
+    if (selected) {
+      const [selectedRow, selectedCol] = selected;
 
-        // Check if adjacent
-        const isAdjacent =
-          (Math.abs(selectedRow - row) === 1 && selectedCol === col) ||
-          (Math.abs(selectedCol - col) === 1 && selectedRow === row);
+      // Check if adjacent
+      const isAdjacent =
+        (Math.abs(selectedRow - row) === 1 && selectedCol === col) ||
+        (Math.abs(selectedCol - col) === 1 && selectedRow === row);
 
-        if (isAdjacent) {
-          swapCells(
-            { row: selectedRow, col: selectedCol },
-            { row, col }
-          );
-        } else {
-          selectCell(row, col);
-        }
+      if (isAdjacent) {
+        swapCells(
+          { row: selectedRow, col: selectedCol },
+          { row, col }
+        );
       } else {
         selectCell(row, col);
       }
-    },
-    [selectCell, swapCells] // state.selectedCell accessed via closure
-  );
+    } else {
+      selectCell(row, col);
+    }
+  };
 
-  const handleNextLevel = useCallback(() => {
+  const handleNextLevel = () => {
     startLevel(state.level + 1);
     setScreen('game');
-  }, [startLevel]);
+  };
 
-  const handleReplay = useCallback(() => {
+  const handleReplay = () => {
     startLevel(state.level);
-  }, [startLevel]);
+  };
 
-  const handleRetry = useCallback(() => {
+  const handleRetry = () => {
     startLevel(state.level);
-  }, [startLevel]);
+  };
 
-  const handleLevelSelect = useCallback(
-    (level: number) => {
-      startLevel(level);
-      setScreen('game');
-    },
-    [startLevel]
-  );
+  const handleLevelSelect = (level: number) => {
+    startLevel(level);
+    setScreen('game');
+  };
 
-  const handleBackToSelect = useCallback(() => {
+  const handleBackToSelect = () => {
     setScreen('levelSelect');
-  }, []);
+  };
 
   return (
     <div
