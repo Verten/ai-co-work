@@ -67,6 +67,7 @@ export default function App() {
         alignItems: 'center',
         padding: '20px',
         minHeight: '100vh',
+        backgroundColor: '#1a1a2e',
       }}
     >
       <AnimatePresence mode="wait">
@@ -115,6 +116,8 @@ export default function App() {
             <GameBoard
               board={state.board}
               selectedCell={state.selectedCell}
+              animationPhase={state.animationPhase}
+              matchingCells={state.matchingCells}
               onCellClick={handleCellClick}
             />
 

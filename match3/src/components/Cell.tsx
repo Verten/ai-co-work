@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CellContent } from '../types/game';
+import { CellContent, AnimationPhase } from '../types/game';
 import { Element } from './Element';
 
 interface CellProps {
@@ -8,16 +8,28 @@ interface CellProps {
   row: number;
   col: number;
   isSelected: boolean;
+  isMatching: boolean;
+  animationPhase: AnimationPhase;
   onClick: () => void;
 }
 
-export const Cell: React.FC<CellProps> = ({ cell, row, col, isSelected, onClick }) => {
+export const Cell: React.FC<CellProps> = ({
+  cell,
+  row,
+  col,
+  isSelected,
+  isMatching,
+  animationPhase,
+  onClick,
+}) => {
+  const isBeingRemoved = animationPhase === 'removing' && isMatching;
+
   return (
     <motion.div
       layoutId={cell ? cell.id : `empty-${row}-${col}`}
       onClick={onClick}
       transition={{
-        layout: { duration: 0.3, ease: 'easeInOut' },
+        layout: { duration: 0.2, ease: 'easeInOut' },
       }}
       style={{
         width: '100%',
@@ -33,11 +45,15 @@ export const Cell: React.FC<CellProps> = ({ cell, row, col, isSelected, onClick 
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          border: isSelected ? '3px solid #FFD700' : '2px solid rgba(255, 255, 255, 0.3)',
-          boxShadow: isSelected ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none',
-          overflow: 'hidden',
+          backgroundColor: isSelected
+            ? 'rgba(255, 215, 0, 0.25)'
+            : 'rgba(255, 255, 255, 0.15)',
+          borderRadius: '12px',
+          border: isSelected
+            ? '3px solid #FFD700'
+            : '2px solid rgba(255, 255, 255, 0.25)',
+          boxShadow: isSelected ? '0 0 12px rgba(255, 215, 0, 0.5)' : 'none',
+          overflow: 'visible',
         }}
       >
         {cell && (
@@ -48,9 +64,33 @@ export const Cell: React.FC<CellProps> = ({ cell, row, col, isSelected, onClick 
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              padding: '16px',
+              boxSizing: 'border-box',
             }}
           >
-            <Element type={cell.type} isSelected={isSelected} />
+            <motion.div
+              animate={
+                isBeingRemoved
+                  ? { scale: [1, 1.2, 0], opacity: [1, 1, 0] }
+                  : isMatching
+                    ? { scale: [1, 1.1, 1], opacity: [1, 0.7, 1] }
+                    : { scale: 1, opacity: 1 }
+              }
+              transition={
+                isBeingRemoved
+                  ? { duration: 0.3, ease: 'easeOut' }
+                  : isMatching
+                    ? { duration: 0.3, repeat: Infinity, repeatType: 'reverse' }
+                    : { duration: 0.2 }
+              }
+              style={{ overflow: 'visible' }}
+            >
+              <Element
+                type={cell.type}
+                isSelected={isSelected}
+                isMatching={isMatching}
+              />
+            </motion.div>
           </div>
         )}
       </div>

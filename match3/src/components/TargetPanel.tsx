@@ -22,12 +22,12 @@ export const TargetPanel: React.FC<TargetPanelProps> = ({ targets, progress }) =
         display: 'flex',
         justifyContent: 'center',
         gap: '16px',
-        width: 'min(90vw, 500px)',
+        width: 'min(95vw, 560px)',
         padding: '12px',
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: '12px',
         marginTop: '12px',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)',
       }}
     >
       {targets.map((target, index) => {
@@ -46,9 +46,9 @@ export const TargetPanel: React.FC<TargetPanelProps> = ({ targets, progress }) =
               alignItems: 'center',
               gap: '8px',
               padding: '8px 16px',
-              backgroundColor: isComplete ? '#E8F5E9' : isAlmost ? '#FFF3E0' : '#FAFAFA',
+              backgroundColor: isComplete ? 'rgba(76, 175, 80, 0.3)' : isAlmost ? 'rgba(255, 152, 0, 0.3)' : 'rgba(255, 255, 255, 0.15)',
               borderRadius: '20px',
-              border: `2px solid ${isComplete ? '#4CAF50' : isAlmost ? '#FF9800' : '#E0E0E0'}`,
+              border: `2px solid ${isComplete ? '#4CAF50' : isAlmost ? '#FF9800' : 'rgba(255, 255, 255, 0.3)'}`,
             }}
           >
             <span style={{ fontSize: '24px' }}>{ELEMENT_EMOJI[target.type]}</span>
@@ -56,7 +56,7 @@ export const TargetPanel: React.FC<TargetPanelProps> = ({ targets, progress }) =
               style={{
                 fontSize: '16px',
                 fontWeight: 'bold',
-                color: isComplete ? '#4CAF50' : '#333',
+                color: isComplete ? '#4CAF50' : '#fff',
               }}
             >
               {Math.min(current, target.count)}/{target.count}
