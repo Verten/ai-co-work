@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Bash(gh repo view:*)",
+      "Bash(git clone:*)",
+      "Bash(powershell:*)",
+      "Bash(Add-Content:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Skill(superpowers:using-git-worktrees)",
+      "Bash(git rev-parse:*)",
+      "Bash(git worktree add:*)",
+      "Bash(npm install)",
+      "Bash(npm run build)",
+      "Skill(superpowers:finishing-a-development-branch)",
+      "Bash(git checkout:*)",
+      "Bash(git pull)",
+      "Bash(git merge:*)",
+      "Bash(npx tsc --version)",
+      "Bash(git branch:*)",
+      "Bash(git worktree:*)"
+    ]
+  }
+}
