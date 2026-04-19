@@ -1,10 +1,16 @@
-import { ElementType, Position } from '../types/game';
+import { CellContent, Position } from '../types/game';
 import { ELEMENT_TYPES } from './levelConfig';
 
 const BOARD_SIZE = 10;
 
-export function generateBoard(): (ElementType | null)[][] {
-  const board: (ElementType | null)[][] = [];
+let idCounter = 0;
+
+function generateId(): string {
+  return `element-${++idCounter}`;
+}
+
+export function generateBoard(): (CellContent | null)[][] {
+  const board: (CellContent | null)[][] = [];
 
   for (let row = 0; row < BOARD_SIZE; row++) {
     board[row] = [];
@@ -16,15 +22,15 @@ export function generateBoard(): (ElementType | null)[][] {
   return board;
 }
 
-function getRandomElement(board: (ElementType | null)[][], row: number, col: number): ElementType {
+function getRandomElement(board: (CellContent | null)[][], row: number, col: number): CellContent {
   const available = [...ELEMENT_TYPES];
 
   // Avoid creating horizontal matches
   if (col >= 2) {
     const left1 = board[row][col - 1];
     const left2 = board[row][col - 2];
-    if (left1 && left1 === left2) {
-      const idx = available.indexOf(left1);
+    if (left1 && left2 && left1.type === left2.type) {
+      const idx = available.indexOf(left1.type);
       if (idx > -1) available.splice(idx, 1);
     }
   }
@@ -33,21 +39,20 @@ function getRandomElement(board: (ElementType | null)[][], row: number, col: num
   if (row >= 2) {
     const up1 = board[row - 1][col];
     const up2 = board[row - 2][col];
-    if (up1 && up1 === up2) {
-      const idx = available.indexOf(up1);
+    if (up1 && up2 && up1.type === up2.type) {
+      const idx = available.indexOf(up1.type);
       if (idx > -1) available.splice(idx, 1);
     }
   }
 
-  return available[Math.floor(Math.random() * available.length)];
+  const finalType = available[Math.floor(Math.random() * available.length)];
+  return { id: generateId(), type: finalType };
 }
 
-export function fillGaps(board: (ElementType | null)[][]): {
-  newBoard: (ElementType | null)[][];
-  updates: { from: Position; to: Position; element: ElementType }[];
+export function fillGaps(board: (CellContent | null)[][]): {
+  newBoard: (CellContent | null)[][];
 } {
   const newBoard = board.map(row => [...row]);
-  const updates: { from: Position; to: Position; element: ElementType }[] = [];
 
   for (let col = 0; col < BOARD_SIZE; col++) {
     let emptySpaces = 0;
@@ -62,34 +67,23 @@ export function fillGaps(board: (ElementType | null)[][]): {
         const newRow = row + emptySpaces;
         newBoard[newRow][col] = element;
         newBoard[row][col] = null;
-        updates.push({
-          from: { row, col },
-          to: { row: newRow, col },
-          element: element!,
-        });
       }
     }
 
     // Fill top empty spaces with new elements
     for (let row = emptySpaces - 1; row >= 0; row--) {
-      const element = ELEMENT_TYPES[Math.floor(Math.random() * ELEMENT_TYPES.length)];
-      newBoard[row][col] = element;
-      updates.push({
-        from: { row: -1, col },
-        to: { row, col },
-        element,
-      });
+      newBoard[row][col] = getRandomElement(newBoard, row, col);
     }
   }
 
-  return { newBoard, updates };
+  return { newBoard };
 }
 
 export function swapElements(
-  board: (ElementType | null)[][],
+  board: (CellContent | null)[][],
   pos1: Position,
   pos2: Position
-): (ElementType | null)[][] {
+): (CellContent | null)[][] {
   const newBoard = board.map(row => [...row]);
   const temp = newBoard[pos1.row][pos1.col];
   newBoard[pos1.row][pos1.col] = newBoard[pos2.row][pos2.col];
@@ -98,9 +92,9 @@ export function swapElements(
 }
 
 export function removeMatches(
-  board: (ElementType | null)[][],
+  board: (CellContent | null)[][],
   matches: Position[][]
-): (ElementType | null)[][] {
+): (CellContent | null)[][] {
   const newBoard = board.map(row => [...row]);
   const toRemove = new Set<string>();
 

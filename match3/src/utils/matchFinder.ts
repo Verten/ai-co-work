@@ -1,8 +1,8 @@
-import { ElementType, Position } from '../types/game';
+import { CellContent, Position } from '../types/game';
 
 const BOARD_SIZE = 10;
 
-export function findMatches(board: (ElementType | null)[][]): Position[][] {
+export function findMatches(board: (CellContent | null)[][]): Position[][] {
   const matches: Position[][] = [];
 
   // Check horizontal matches
@@ -12,7 +12,11 @@ export function findMatches(board: (ElementType | null)[][]): Position[][] {
       if (!element) continue;
 
       let matchLength = 1;
-      while (col + matchLength < BOARD_SIZE && board[row][col + matchLength] === element) {
+      while (true) {
+        const nextCol = col + matchLength;
+        if (nextCol >= BOARD_SIZE) break;
+        const next = board[row][nextCol];
+        if (!next || next.type !== element.type) break;
         matchLength++;
       }
 
@@ -34,7 +38,11 @@ export function findMatches(board: (ElementType | null)[][]): Position[][] {
       if (!element) continue;
 
       let matchLength = 1;
-      while (row + matchLength < BOARD_SIZE && board[row + matchLength][col] === element) {
+      while (true) {
+        const nextRow = row + matchLength;
+        if (nextRow >= BOARD_SIZE) break;
+        const next = board[nextRow][col];
+        if (!next || next.type !== element.type) break;
         matchLength++;
       }
 
@@ -52,7 +60,7 @@ export function findMatches(board: (ElementType | null)[][]): Position[][] {
   return matches;
 }
 
-export function hasValidMoves(board: (ElementType | null)[][]): boolean {
+export function hasValidMoves(board: (CellContent | null)[][]): boolean {
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
       // Try swap right
@@ -71,12 +79,12 @@ export function hasValidMoves(board: (ElementType | null)[][]): boolean {
 }
 
 function swap(
-  board: (ElementType | null)[][],
+  board: (CellContent | null)[][],
   r1: number,
   c1: number,
   r2: number,
   c2: number
-): (ElementType | null)[][] {
+): (CellContent | null)[][] {
   const newBoard = board.map(row => [...row]);
   const temp = newBoard[r1][c1];
   newBoard[r1][c1] = newBoard[r2][c2];
@@ -85,7 +93,7 @@ function swap(
 }
 
 export function wouldCreateMatch(
-  board: (ElementType | null)[][],
+  board: (CellContent | null)[][],
   pos1: Position,
   pos2: Position
 ): boolean {

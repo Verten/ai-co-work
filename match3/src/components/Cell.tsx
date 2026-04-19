@@ -1,23 +1,20 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ElementType } from '../types/game';
+import { motion } from 'framer-motion';
+import { CellContent } from '../types/game';
 import { Element } from './Element';
 
 interface CellProps {
-  type: ElementType | null;
+  cell: CellContent | null;
   row: number;
   col: number;
   isSelected: boolean;
-  isMatching?: boolean;
   onClick: () => void;
 }
 
-export const Cell: React.FC<CellProps> = ({ type, row, col, isSelected, isMatching, onClick }) => {
+export const Cell: React.FC<CellProps> = ({ cell, row, col, isSelected, onClick }) => {
   return (
     <motion.div
-      layout
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      layoutId={cell ? cell.id : `empty-${row}-${col}`}
       onClick={onClick}
       transition={{
         layout: { duration: 0.3, ease: 'easeInOut' },
@@ -26,7 +23,7 @@ export const Cell: React.FC<CellProps> = ({ type, row, col, isSelected, isMatchi
         width: '100%',
         paddingBottom: '100%',
         position: 'relative',
-        cursor: type ? 'pointer' : 'default',
+        cursor: cell ? 'pointer' : 'default',
       }}
     >
       <div
@@ -43,33 +40,19 @@ export const Cell: React.FC<CellProps> = ({ type, row, col, isSelected, isMatchi
           overflow: 'hidden',
         }}
       >
-        <AnimatePresence mode="popLayout">
-          {type && (
-            <motion.div
-              key={`${type}-${row}-${col}`}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{
-                scale: isMatching ? [1, 1.3, 0] : 1,
-                opacity: isMatching ? [1, 1, 0] : 1,
-              }}
-              transition={{
-                duration: isMatching ? 0.3 : 0.2,
-                ease: 'easeOut',
-              }}
-              exit={{ scale: 0, opacity: 0 }}
-              layout
-              style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Element type={type} isSelected={isSelected} isMatching={isMatching} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {cell && (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Element type={cell.type} isSelected={isSelected} />
+          </div>
+        )}
       </div>
     </motion.div>
   );

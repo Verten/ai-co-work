@@ -1,11 +1,11 @@
 import { useReducer, useCallback } from 'react';
-import { GameState, GameAction, Position, ElementType } from '../types/game';
+import { GameState, GameAction, Position, ElementType, CellContent } from '../types/game';
 import { getLevelConfig } from '../utils/levelConfig';
 import { findMatches, wouldCreateMatch, calculateScore } from '../utils/matchFinder';
 import { generateBoard, swapElements, fillGaps, removeMatches } from '../utils/boardFiller';
 import { hasValidMoves } from '../utils/matchFinder';
 
-function createBoard(): (ElementType | null)[][] {
+function createBoard(): (CellContent | null)[][] {
   let board = generateBoard();
   while (!hasValidMoves(board)) {
     board = generateBoard();
@@ -28,7 +28,10 @@ function createInitialState(level: number): GameState {
   };
 }
 
-function processMatchesAndCascade(board: (ElementType | null)[][], progress: Record<ElementType, number>) {
+function processMatchesAndCascade(
+  board: (CellContent | null)[][],
+  progress: Record<ElementType, number>
+) {
   let currentBoard = board;
   let totalScore = 0;
   let cascadeLevel = 0;
@@ -41,9 +44,9 @@ function processMatchesAndCascade(board: (ElementType | null)[][], progress: Rec
     // Calculate score and update progress for this round
     matches.forEach(match => {
       totalScore += calculateScore(match.length, cascadeLevel);
-      const elementType = currentBoard[match[0].row][match[0].col];
-      if (elementType) {
-        progress[elementType] += match.length;
+      const element = currentBoard[match[0].row][match[0].col];
+      if (element) {
+        progress[element.type] += match.length;
       }
     });
 
