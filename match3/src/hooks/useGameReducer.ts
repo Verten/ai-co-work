@@ -28,6 +28,41 @@ function createInitialState(level: number): GameState {
   };
 }
 
+function processMatchesAndCascade(board: (ElementType | null)[][], progress: Record<ElementType, number>) {
+  let currentBoard = board;
+  let totalScore = 0;
+  let cascadeLevel = 0;
+
+  // Find initial matches
+  let matches = findMatches(currentBoard);
+
+  // Process matches and cascades
+  while (matches.length > 0) {
+    // Calculate score and update progress for this round
+    matches.forEach(match => {
+      totalScore += calculateScore(match.length, cascadeLevel);
+      const elementType = currentBoard[match[0].row][match[0].col];
+      if (elementType) {
+        progress[elementType] += match.length;
+      }
+    });
+
+    // Remove matches
+    currentBoard = removeMatches(currentBoard, matches);
+
+    // Fill gaps - this creates new board
+    const { newBoard: filled } = fillGaps(currentBoard);
+    currentBoard = filled;
+
+    cascadeLevel++;
+
+    // Find new matches in the filled board
+    matches = findMatches(currentBoard);
+  }
+
+  return { board: currentBoard, score: totalScore, cascadeLevel };
+}
+
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'SELECT_CELL': {
@@ -62,57 +97,15 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       const matches = findMatches(newBoard);
 
       if (matches.length === 0) {
-        // Invalid swap, swap back
+        // Invalid swap, swap back - just deselect
         return { ...state, selectedCell: null };
       }
 
-      // Process matches and cascade
-      let currentBoard = newBoard;
-      let totalScore = 0;
-      let cascadeLevel = 0;
+      // Valid swap - process matches and cascade
       const progress = { ...state.progress };
+      const { board: finalBoard, score: matchScore } = processMatchesAndCascade(newBoard, progress);
 
-      while (matches.length > 0) {
-        // Calculate score
-        matches.forEach(match => {
-          totalScore += calculateScore(match.length, cascadeLevel);
-          // Update progress
-          const elementType = currentBoard[match[0].row][match[0].col];
-          if (elementType) {
-            progress[elementType] += match.length;
-          }
-        });
-
-        // Remove matches
-        currentBoard = removeMatches(currentBoard, matches);
-        // Fill gaps
-        const { newBoard: filled } = fillGaps(currentBoard);
-        currentBoard = filled;
-
-        cascadeLevel++;
-        matches.length = 0; // Will be recalculated below
-      }
-
-      // Check for new matches after cascade
-      let hasMoreMatches = true;
-      while (hasMoreMatches) {
-        const newMatches = findMatches(currentBoard);
-        if (newMatches.length === 0) {
-          hasMoreMatches = false;
-        } else {
-          newMatches.forEach(match => {
-            totalScore += calculateScore(match.length, cascadeLevel);
-            const elementType = currentBoard[match[0].row][match[0].col];
-            if (elementType) {
-              progress[elementType] += match.length;
-            }
-          });
-          currentBoard = removeMatches(currentBoard, newMatches);
-          const { newBoard: filled } = fillGaps(currentBoard);
-          currentBoard = filled;
-          cascadeLevel++;
-        }
-      }
+      const totalScore = state.score + matchScore;
 
       // Check win condition
       const allTargetsMet = state.targets.every(
@@ -124,8 +117,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
       return {
         ...state,
-        board: currentBoard,
-        score: state.score + totalScore,
+        board: finalBoard,
+        score: totalScore,
         progress,
         moves: newMoves,
         gameStatus,
