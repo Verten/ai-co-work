@@ -1,0 +1,143 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.app {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* 移动端适配 */
+@media (max-width: 900px) {
+  .main-container {
+    flex-direction: column !important;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    background-color: #16213e;
+    z-index: 100;
+    transition: left 0.3s ease;
+    padding: 20px;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 99;
+  }
+
+  .sidebar-overlay.visible {
+    display: block;
+  }
+
+  .menu-toggle {
+    display: flex !important;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 101;
+    width: 44px;
+    height: 44px;
+    background-color: #0ff;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .canvas-wrapper {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .canvas-container canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+
+  .toolbar {
+    flex-wrap: wrap !important;
+    justify-content: center;
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+
+  .guess-input-wrapper {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 50;
+  }
+
+  .game-status {
+    margin-top: 60px !important;
+  }
+}
+
+/* 默认隐藏移动端菜单按钮 */
+.menu-toggle {
+  display: none;
+}
+
+/* 桌面端 */
+@media (min-width: 901px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
+}
+
+/* 触摸优化 */
+@media (hover: none) and (pointer: coarse) {
+  canvas {
+    touch-action: none;
+  }
+
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 小屏幕手机 */
+@media (max-width: 480px) {
+  .app {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 24px !important;
+  }
+
+  .tool-group button,
+  .actions button {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+}
