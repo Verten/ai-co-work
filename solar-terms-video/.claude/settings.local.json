@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(remotion-best-practices)",
+      "Bash(npx create-video@latest:*)",
+      "Bash(npm install)",
+      "Bash(npx remotion still SolarTermsVideo --frame=30 --scale=0.25)"
+    ]
+  }
+}
