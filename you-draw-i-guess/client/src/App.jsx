@@ -24,7 +24,7 @@ function Game() {
   const [guessTimeLeft, setGuessTimeLeft] = useState(60);
   const [showResults, setShowResults] = useState(false);
   const [scores, setScores] = useState([]);
-  const [nextRoundTime, setNextRoundTime] = useState(30);
+  const [nextRoundTime, setNextRoundTime] = useState(10);
 
   // 画笔状态
   const [tool, setTool] = useState('brush');
@@ -49,7 +49,7 @@ function Game() {
     if (!socket) return;
 
     socket.on('usersUpdate', ({ users }) => {
-      setUsers(users);
+      setUsers(users); // Server sends complete user data with scores
     });
 
     socket.on('gameStart', ({ word, isDrawer: drawer }) => {
@@ -60,6 +60,11 @@ function Game() {
       setHistory([]);
       setHistoryIndex(-1);
       setDrawTimeLeft(120);
+      setGuessTimeLeft(60);
+      // Clear canvas visually
+      if (clearCanvasRef.current) {
+        clearCanvasRef.current();
+      }
     });
 
     socket.on('drawerStatus', ({ drawer }) => {
@@ -92,6 +97,13 @@ function Game() {
 
     socket.on('phaseChange', ({ phase: newPhase }) => {
       setPhase(newPhase);
+      // Clear results modal when new phase starts (but don't override with waiting)
+      if (newPhase !== 'ended' && newPhase !== 'waiting') {
+        setShowResults(false);
+      }
+      if (newPhase === 'drawing') {
+        setDrawTimeLeft(120);
+      }
       if (newPhase === 'guessing') {
         setGuessTimeLeft(60);
       }
@@ -100,7 +112,17 @@ function Game() {
     socket.on('roundEnd', ({ scores: newScores }) => {
       setScores(newScores);
       setShowResults(true);
-      setNextRoundTime(30);
+      setNextRoundTime(10);
+      // Update users' scores in the user list
+      setUsers(prevUsers => {
+        return prevUsers.map(user => {
+          const scoreEntry = newScores.find(s => s.id === user.socketId);
+          if (scoreEntry) {
+            return { ...user, score: scoreEntry.score };
+          }
+          return user;
+        });
+      });
     });
 
     return () => {
@@ -134,11 +156,12 @@ function Game() {
     if (showResults && nextRoundTime > 0) {
       const timer = setTimeout(() => setNextRoundTime(prev => prev - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (showResults && nextRoundTime === 0) {
+    } else if (showResults && nextRoundTime === 0 && phase === 'ended') {
+      // Only set waiting if phase is still 'ended' (server hasn't sent new phase yet)
       setShowResults(false);
       setPhase('waiting');
     }
-  }, [showResults, nextRoundTime]);
+  }, [showResults, nextRoundTime, phase]);
 
   // 处理笔触完成
   const handleStrokeComplete = useCallback((stroke) => {
@@ -178,18 +201,12 @@ function Game() {
 
   // 猜词
   const handleGuess = useCallback((text) => {
-    if (socket && phase === 'guessing') {
+    if (socket && (phase === 'drawing' || phase === 'guessing')) {
       socket.emit('guess', { text });
     }
   }, [socket, phase]);
 
-  // 完成绘画
-  const handleFinishDrawing = useCallback(() => {
-    if (socket && isDrawer) {
-      socket.emit('finishDrawing');
-    }
-  }, [socket, isDrawer]);
-
+  
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < history.length - 1;
 
@@ -286,33 +303,14 @@ function Game() {
             />
           </div>
 
-          {/* 完成绘画按钮 */}
-          {isDrawer && phase === 'drawing' && (
-            <button
-              onClick={handleFinishDrawing}
-              style={{
-                marginTop: '15px',
-                padding: '12px 30px',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                backgroundColor: '#0ff',
-                color: '#000',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer'
-              }}
-            >
-              完成绘画
-            </button>
-          )}
-
+          
           {/* 猜词输入 */}
           {!isDrawer && phase !== 'waiting' && (
             <div style={{ marginTop: '15px' }}>
               <GuessInput
                 onGuess={handleGuess}
-                disabled={phase !== 'guessing'}
-                placeholder={phase === 'guessing' ? '输入你的猜测...' : '等待绘画完成...'}
+                disabled={phase === 'waiting' || phase === 'ended'}
+                placeholder={phase === 'drawing' ? '开始猜测...' : (phase === 'guessing' ? '输入你的猜测...' : '等待中...')}
               />
             </div>
           )}

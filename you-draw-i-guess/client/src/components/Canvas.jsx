@@ -14,6 +14,12 @@ const Canvas = ({
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState([]);
+  const strokesLengthRef = useRef(strokes.length);
+
+  // 记录上一次的strokes长度，用于检测清空
+  useEffect(() => {
+    strokesLengthRef.current = strokes.length;
+  }, [strokes.length]);
 
   // 绘制已有笔触
   useEffect(() => {
@@ -51,7 +57,7 @@ const Canvas = ({
     }
     return {
       x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.left) * scaleY
+      y: (e.clientY - rect.top) * scaleY
     };
   };
 
@@ -108,6 +114,10 @@ const Canvas = ({
 
   // 清除画布
   const clearCanvas = useCallback(() => {
+    // 清空时也要停止绘画
+    setIsDrawing(false);
+    setCurrentPoints([]);
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ffffff';

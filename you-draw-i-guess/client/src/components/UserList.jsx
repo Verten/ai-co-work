@@ -18,7 +18,7 @@ const UserList = ({ users, currentUserId, isDrawer }) => {
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {users.map(user => (
           <li
-            key={user.userId || user.socketId}
+            key={user.socketId}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -56,10 +56,10 @@ const UserList = ({ users, currentUserId, isDrawer }) => {
               )}
             </div>
             <span style={{
-              color: '#0ff',
+              color: user.socketId === currentUserId ? '#000' : '#0ff',
               fontWeight: 'bold'
             }}>
-              {user.score || 0}分
+              {typeof user.score === 'number' ? user.score : 0}分
             </span>
           </li>
         ))}
