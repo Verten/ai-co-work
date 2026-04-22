@@ -95,6 +95,15 @@ function Game() {
       }
     });
 
+    socket.on('timeSync', ({ remainingTime, phase: timePhase }) => {
+      // Sync time when joining mid-game - use the phase from server for reliability
+      if (timePhase === 'drawing') {
+        setDrawTimeLeft(remainingTime);
+      } else if (timePhase === 'guessing') {
+        setGuessTimeLeft(remainingTime);
+      }
+    });
+
     socket.on('phaseChange', ({ phase: newPhase }) => {
       setPhase(newPhase);
       // Clear results modal when new phase starts (but don't override with waiting)
@@ -132,6 +141,7 @@ function Game() {
       socket.off('stroke');
       socket.off('clearCanvas');
       socket.off('guessResult');
+      socket.off('timeSync');
       socket.off('phaseChange');
       socket.off('roundEnd');
     };

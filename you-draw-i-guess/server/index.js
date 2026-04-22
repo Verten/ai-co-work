@@ -15,7 +15,7 @@ const io = new Server(server, {
 });
 
 // 导入游戏状态和词库
-const { addPlayer, removePlayer, getPlayers, setDrawer, getDrawer, setWord, getWord, setPhase, getPhase, resetScores } = require('./gameState');
+const { addPlayer, removePlayer, getPlayers, setDrawer, getDrawer, setWord, getWord, setPhase, getPhase, getRemainingTime, resetScores } = require('./gameState');
 const { getRandomWord } = require('./words');
 
 // Timer management to prevent multiple timers
@@ -34,8 +34,14 @@ io.on('connection', (socket) => {
       startNewRound();
     } else if (getPhase() !== 'waiting') {
       // Player joining mid-game - send current game state
-      socket.emit('phaseChange', { phase: getPhase() });
+      const currentPhase = getPhase();
+      socket.emit('phaseChange', { phase: currentPhase });
       socket.emit('drawerStatus', { drawer: getDrawer() });
+      // Send remaining time to the new player with current phase
+      const remainingTime = getRemainingTime();
+      if (remainingTime !== null) {
+        socket.emit('timeSync', { remainingTime, phase: currentPhase });
+      }
       // If new player is the drawer, send them the word
       if (getDrawer() === socket.id) {
         socket.emit('gameStart', { word: getWord(), isDrawer: true });
