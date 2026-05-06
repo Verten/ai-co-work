@@ -4,9 +4,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import ChatGeneratePage from './components/ChatGeneratePage';
 
 // Placeholder components for pages
-const ChatPage = () => <div>Chat Generation Page</div>;
 const RandomPage = () => <div>Random Generation Page</div>;
 const PreviewPage = () => <div>Preview Page</div>;
 const ProfilePage = () => <div>Profile Page</div>;
@@ -30,7 +30,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatGeneratePage />} />
           <Route path="/random" element={<RandomPage />} />
           <Route path="/preview/:id" element={<PreviewPage />} />
           <Route

@@ -1,0 +1,226 @@
+.chat-generate-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.chat-generate-container {
+  max-width: 700px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.chat-generate-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.chat-generate-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 0.5rem 0;
+}
+
+.chat-generate-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #e0e0e0;
+  color: #999;
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  background: #667eea;
+  color: #ffffff;
+}
+
+.step-dot.completed {
+  background: #4caf50;
+  color: #ffffff;
+}
+
+.step-content {
+  margin-bottom: 2rem;
+}
+
+.step-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+}
+
+.error-message {
+  background: #fee;
+  color: #c00;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.option-card:hover {
+  border-color: #667eea;
+  background: #f8f6ff;
+}
+
+.option-card.selected {
+  border-color: #667eea;
+  background: #667eea;
+  color: #ffffff;
+}
+
+.option-card.selected .option-label {
+  color: #ffffff;
+}
+
+.option-emoji {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.option-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.description-section {
+  margin-bottom: 2rem;
+}
+
+.description-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.description-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.description-input::placeholder {
+  color: #999;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-back {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.btn-back:hover:not(:disabled) {
+  background: #d0d0d0;
+}
+
+.btn-next {
+  background: #667eea;
+  color: #ffffff;
+}
+
+.btn-next:hover:not(:disabled) {
+  background: #5a70d4;
+}
+
+.btn-generate {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  padding: 1rem 2.5rem;
+}
+
+.btn-generate:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+@media (max-width: 600px) {
+  .chat-generate-container {
+    padding: 1.5rem;
+  }
+
+  .options-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+  }
+}
