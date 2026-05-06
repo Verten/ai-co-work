@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { generate } from '../api';
 import './RandomGeneratePage.css';
 
@@ -12,7 +11,7 @@ const CHARACTERS = [
   { id: 'puppy', label: '小狗', emoji: '🐶' },
   { id: 'kitten', label: '小猫', emoji: '🐱' },
   { id: 'robot', label: '机器人', emoji: '🤖' },
-  { id: 'pony', label: '小马', emoji: '🦄' },
+  { id: 'pony', label: '小马', emoji: '🐴' },
   { id: 'unicorn', label: '独角兽', emoji: '🦄' },
   { id: 'fox', label: '小狐狸', emoji: '🦊' },
 ];
@@ -50,15 +49,7 @@ const STYLES = [
   { id: 'watercolor', label: '水彩', emoji: '🎨' },
 ];
 
-const STYLE_MAP = {
-  comic: 'comic',
-  vibrant: 'vibrant',
-  medieval: 'medieval',
-  watercolor: 'watercolor',
-};
-
 const RandomGeneratePage = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     character: '',
@@ -90,11 +81,6 @@ const RandomGeneratePage = () => {
   };
 
   const handleGenerate = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-
     const { character, setting, theme, style } = formData;
 
     if (!character || !setting || !theme || !style) {
