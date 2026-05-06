@@ -5,9 +5,7 @@ import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ChatGeneratePage from './components/ChatGeneratePage';
-
-// Placeholder components for pages
-const RandomPage = () => <div>Random Generation Page</div>;
+import RandomGeneratePage from './components/RandomGeneratePage';
 const PreviewPage = () => <div>Preview Page</div>;
 const ProfilePage = () => <div>Profile Page</div>;
 
@@ -31,7 +29,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/chat" element={<ChatGeneratePage />} />
-          <Route path="/random" element={<RandomPage />} />
+          <Route path="/random" element={<RandomGeneratePage />} />
           <Route path="/preview/:id" element={<PreviewPage />} />
           <Route
             path="/profile"
