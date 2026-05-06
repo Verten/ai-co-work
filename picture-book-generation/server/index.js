@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
+import generateRoutes from './routes/generate.js';
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ app.get('/api/health', (req, res) => {
 
 // Auth routes
 app.use('/api/auth', authRoutes);
+
+// Generation routes
+app.use('/api/generate', generateRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
