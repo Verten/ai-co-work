@@ -1,4 +1,7 @@
 const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
+if (!MINIMAX_API_KEY) {
+  throw new Error('MINIMAX_API_KEY environment variable is required');
+}
 const MINIMAX_API_BASE = 'https://api.minimaxi.com';
 
 /**
@@ -19,6 +22,7 @@ async function generateStoryText(messages) {
       temperature: 0.8,
       messages,
     }),
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!response.ok) {
@@ -27,7 +31,9 @@ async function generateStoryText(messages) {
   }
 
   const data = await response.json();
-  return data.text;
+  // Extract text from content array (Anthropic format)
+  const textBlock = data.content?.find(c => c.type === 'text');
+  return textBlock?.text || '';
 }
 
 /**
@@ -46,11 +52,15 @@ async function generateImage(prompt, style) {
     body: JSON.stringify({
       model: 'image-01',
       prompt,
-      style,
+      style: {
+        style_type: style,
+        style_weight: 0.8
+      },
       aspect_ratio: '3:4',
       response_format: 'url',
       prompt_optimizer: true,
     }),
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!response.ok) {
