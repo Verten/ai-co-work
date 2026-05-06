@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import HomePage from './components/HomePage';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
 
 // Placeholder components for pages
-const HomePage = () => <div>Home Page</div>;
 const ChatPage = () => <div>Chat Generation Page</div>;
 const RandomPage = () => <div>Random Generation Page</div>;
 const PreviewPage = () => <div>Preview Page</div>;
-const LoginPage = () => <div>Login Page</div>;
-const RegisterPage = () => <div>Register Page</div>;
 const ProfilePage = () => <div>Profile Page</div>;
 
 // Protected route wrapper
