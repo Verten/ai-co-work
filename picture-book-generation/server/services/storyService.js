@@ -11,7 +11,7 @@ Your expertise:
 - Create memorable characters that children can relate to
 - Use age-appropriate vocabulary and sentence structures
 - Craft stories with a clear beginning, middle, and end
-- Each story consists of 5 pages with diverse scenes and settings
+- Each story consists of 10-12 pages with diverse scenes and settings
 
 Output format for each page:
 - Page N: [scene description in Chinese] | [visual description for image generation in English]
@@ -37,23 +37,23 @@ function buildUserPrompt(config, mode) {
   if (mode === 'chat') {
     // Chat mode: description and style based
     const { description, style } = config;
-    return `Create a 5-page children's picture book based on the following concept:
+    return `Create a 10-12 page children's picture book based on the following concept:
 
 Description: ${description}
 Art Style: ${style || '水彩'}
 
-Please write a complete story with 5 pages, following the format specified in your instructions.`;
+Please write a complete story with 10-12 pages, following the format specified in your instructions.`;
   } else {
     // Random mode: character, setting, theme based
     const { character, setting, theme, style } = config;
-    return `Create a 5-page children's picture book with the following elements:
+    return `Create a 10-12 page children's picture book with the following elements:
 
 Character: ${character || 'a little rabbit'}
 Setting: ${setting || 'a magical forest'}
 Theme: ${theme || 'friendship and adventure'}
 Art Style: ${style || '水彩'}
 
-Please write a complete story with 5 pages, following the format specified in your instructions.`;
+Please write a complete story with 10-12 pages, following the format specified in your instructions.`;
   }
 }
 
@@ -100,7 +100,7 @@ async function generateStory(config, mode) {
 
   // Generate story text
   const messages = [
-    { role: 'user', content: systemPrompt },
+    { role: 'system', content: systemPrompt },
     { role: 'user', content: userPrompt }
   ];
 
@@ -110,10 +110,13 @@ async function generateStory(config, mode) {
   const parsedPages = parseStoryPages(generatedText);
 
   // Generate title from first page story or config
-  let title = config.title || 'Untitled Story';
-  if (!config.title && parsedPages.length > 0) {
-    // Extract first 15 characters as a simple title
-    title = parsedPages[0].story.substring(0, 20) + '...';
+  const story = { title: config.title || null };
+  if (!story.title && parsedPages.length > 0 && parsedPages[0].story) {
+    // Extract first 10 characters as a simple title (properly handles Chinese)
+    story.title = parsedPages[0].story.substring(0, 10) + '...';
+  }
+  if (!story.title) {
+    story.title = 'Untitled Story';
   }
 
   // Generate images for each page
@@ -123,23 +126,23 @@ async function generateStory(config, mode) {
       try {
         const { url } = await generateImage(page.imagePrompt, style);
         return {
-          pageNum: index + 1,
-          story: page.story,
-          imageUrl: url
+          page_number: index + 1,
+          text: page.story,
+          image_url: url
         };
       } catch (error) {
         console.error(`Failed to generate image for page ${index + 1}:`, error);
         return {
-          pageNum: index + 1,
-          story: page.story,
-          imageUrl: null
+          page_number: index + 1,
+          text: page.story,
+          image_url: null
         };
       }
     })
   );
 
   return {
-    title,
+    title: story.title || title,
     pages: pagesWithImages
   };
 }
