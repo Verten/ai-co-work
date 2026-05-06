@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import db from '../db/index.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const SESSION_SECRET = process.env.SESSION_SECRET || 'your-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 // POST /register - User registration
@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
     const result = db.prepare('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)').run(username, email, password_hash);
 
     // Generate token
-    const token = jwt.sign({ id: result.lastInsertRowid, username, email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    const token = jwt.sign({ id: result.lastInsertRowid, username, email }, SESSION_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
     res.status(201).json({ token, user: { id: result.lastInsertRowid, username, email } });
   } catch (err) {
@@ -64,7 +64,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate token
-    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, SESSION_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
     res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
   } catch (err) {
