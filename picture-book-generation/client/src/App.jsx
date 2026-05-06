@@ -7,7 +7,7 @@ import RegisterPage from './components/RegisterPage';
 import ChatGeneratePage from './components/ChatGeneratePage';
 import RandomGeneratePage from './components/RandomGeneratePage';
 import PreviewPage from './components/PreviewPage';
-const ProfilePage = () => <div>Profile Page</div>;
+import ProfilePage from './components/ProfilePage';
 
 // Protected route wrapper
 const PrivateRoute = ({ children }) => {
