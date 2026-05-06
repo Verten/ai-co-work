@@ -6,7 +6,7 @@ import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import ChatGeneratePage from './components/ChatGeneratePage';
 import RandomGeneratePage from './components/RandomGeneratePage';
-const PreviewPage = () => <div>Preview Page</div>;
+import PreviewPage from './components/PreviewPage';
 const ProfilePage = () => <div>Profile Page</div>;
 
 // Protected route wrapper
