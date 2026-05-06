@@ -283,8 +283,6 @@ function Game() {
             padding: '20px'
           }}>
             <Canvas
-              width={800}
-              height={600}
               isDrawingEnabled={isDrawer && phase === 'drawing'}
               tool={tool}
               color={color}

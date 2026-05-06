@@ -1,8 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 
 const Canvas = ({
-  width = 800,
-  height = 600,
   isDrawingEnabled = true,
   tool = 'brush',
   color = '#000000',
@@ -12,18 +10,39 @@ const Canvas = ({
   onClear
 }) => {
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentPoints, setCurrentPoints] = useState([]);
   const strokesLengthRef = useRef(strokes.length);
+
+  // 监听容器尺寸变化
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width: Math.floor(width), height: Math.floor(height) });
+      }
+    });
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   // 记录上一次的strokes长度，用于检测清空
   useEffect(() => {
     strokesLengthRef.current = strokes.length;
   }, [strokes.length]);
 
+  const { width, height } = dimensions;
+
   // 绘制已有笔触
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
@@ -132,25 +151,37 @@ const Canvas = ({
   }, [onClear, clearCanvas]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      onMouseDown={startDrawing}
-      onMouseMove={draw}
-      onMouseUp={endDrawing}
-      onMouseLeave={endDrawing}
-      onTouchStart={startDrawing}
-      onTouchMove={draw}
-      onTouchEnd={endDrawing}
+    <div
+      ref={containerRef}
       style={{
-        touchAction: 'none',
-        cursor: isDrawingEnabled ? 'crosshair' : 'not-allowed',
-        backgroundColor: '#ffffff',
-        borderRadius: '8px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+        width: '100%',
+        aspectRatio: '4 / 3',
+        minHeight: '300px'
       }}
-    />
+    >
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={endDrawing}
+        onMouseLeave={endDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={endDrawing}
+        style={{
+          width: '100%',
+          height: '100%',
+          touchAction: 'none',
+          cursor: isDrawingEnabled ? 'crosshair' : 'not-allowed',
+          backgroundColor: '#ffffff',
+          borderRadius: '8px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          display: 'block'
+        }}
+      />
+    </div>
   );
 };
 

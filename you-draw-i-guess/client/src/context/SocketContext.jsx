@@ -10,7 +10,8 @@ export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3001', {
+    const socketUrl = `${window.location.protocol}//${window.location.hostname}:3001`;
+    const newSocket = io(socketUrl, {
       transports: ['websocket', 'polling']
     });
 

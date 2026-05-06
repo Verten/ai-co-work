@@ -9,6 +9,13 @@ import RandomGeneratePage from './components/RandomGeneratePage';
 import PreviewPage from './components/PreviewPage';
 import ProfilePage from './components/ProfilePage';
 
+import './components/HomePage.css';
+import './components/AuthPage.css';
+import './components/ChatGeneratePage.css';
+import './components/RandomGeneratePage.css';
+import './components/PreviewPage.css';
+import './components/ProfilePage.css';
+
 // Protected route wrapper
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();

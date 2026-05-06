@@ -1,0 +1,78 @@
+<h2>设计方案总结</h2>
+<p class="subtitle">请确认以下设计决策</p>
+
+<div class="section">
+  <h3>1. 首页布局</h3>
+  <div style="background: #e8f4fd; border-radius: 8px; padding: 15px; border-left: 4px solid #2196f3;">
+    <strong>卡片式选择</strong> - 两个大卡片并排："对话生成" 与 "随机生成"
+  </div>
+</div>
+
+<div class="section">
+  <h3>2. 对话生成模式</h3>
+  <div style="background: #e8f4fd; border-radius: 8px; padding: 15px; border-left: 4px solid #2196f3;">
+    <strong>引导式多轮对话</strong> - 系统逐步引导用户完善故事细节（主角→场景→情节→主题）
+  </div>
+</div>
+
+<div class="section">
+  <h3>3. 随机生成要素（全部让用户选择）</h3>
+  <div style="background: #fff3e0; border-radius: 8px; padding: 15px; border-left: 4px solid #ff9800;">
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>主角类型（小女孩/小男孩/小动物/怪物/机器人...）</li>
+      <li>故事场景（森林/海底/太空/城市/农场/学校...）</li>
+      <li>故事主题（冒险/友情/成长/幽默/勇气/亲情...）</li>
+      <li>画风风格（卡通/水彩/油画/素描/动漫...）</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section">
+  <h3>4. 绘本预览与输出</h3>
+  <div style="background: #e8f4fd; border-radius: 8px; padding: 15px; border-left: 4px solid #2196f3;">
+    <strong>翻页预览 + 打印</strong> - 类似真实绘本的左右翻页效果，支持打印成册
+  </div>
+</div>
+
+<div class="section">
+  <h3>5. 后端架构</h3>
+  <div style="background: #e8f4fd; border-radius: 8px; padding: 15px; border-left: 4px solid #2196f3;">
+    <strong>Node.js 后端 + 数据库</strong> - API Key 安全，绘本数据持久化存储
+  </div>
+</div>
+
+<div class="section">
+  <h3>6. 用户系统</h3>
+  <div style="background: #e8f4fd; border-radius: 8px; padding: 15px; border-left: 4px solid #2196f3;">
+    <strong>需要登录</strong> - 用户注册/登录后，可以保存历史绘本、管理作品集
+  </div>
+</div>
+
+<br>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>技术栈</h4>
+    <ul>
+      <li>前端: React</li>
+      <li>后端: Node.js</li>
+      <li>数据库: SQLite/MySQL/PostgreSQL</li>
+      <li>AI: MiniMax API (文本生成 + 文生图)</li>
+    </ul>
+  </div>
+  <div class="pros">
+    <h4>绘本规格</h4>
+    <ul>
+      <li>每本 10 页左右</li>
+      <li>每页: 图片 + 文字</li>
+      <li>画风: 漫画/元气/中世纪/水彩</li>
+      <li>导出: 支持打印、下载 PDF</li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<div style="text-align: center; padding: 20px;">
+  <p style="font-size: 18px; color: #666;">如果以上设计方案没问题，我将编写设计文档</p>
+</div>

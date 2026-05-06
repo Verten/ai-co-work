@@ -1,0 +1,48 @@
+<h2>后端架构确认</h2>
+<p class="subtitle">关于数据存储和用户系统</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>纯前端 + API 调用</h3>
+      <p>前端直调 MiniMax API，无需用户登录，所有数据在前端内存中处理</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Node.js 后端 + 本地存储</h3>
+      <p>后端作为中间层转发 API 请求，绘本数据存储在服务器本地文件中</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Node.js 后端 + 数据库</h3>
+      <p>使用 SQLite/MySQL/PostgreSQL 等数据库持久化存储绘本和用户数据</p>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="pros-cons">
+  <div class="pros">
+    <h4>选择 A 的理由</h4>
+    <ul>
+      <li>架构简单，开发速度快</li>
+      <li>无需管理服务器和数据库</li>
+      <li>适合单人使用或临时展示</li>
+    </ul>
+  </div>
+  <div class="cons">
+    <h4>选择 B/C 的理由</h4>
+    <ul>
+      <li>保护 API Key 不暴露在前端</li>
+      <li>可以添加用户登录系统</li>
+      <li>绘本数据可以保存和复用</li>
+      <li>支持后续功能扩展</li>
+    </ul>
+  </div>
+</div>
