@@ -35,8 +35,22 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/chat" element={<ChatGeneratePage />} />
-          <Route path="/random" element={<RandomGeneratePage />} />
+          <Route
+            path="/chat"
+            element={
+              <PrivateRoute>
+                <ChatGeneratePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/random"
+            element={
+              <PrivateRoute>
+                <RandomGeneratePage />
+              </PrivateRoute>
+            }
+          />
           <Route path="/preview/:id" element={<PreviewPage />} />
           <Route
             path="/profile"

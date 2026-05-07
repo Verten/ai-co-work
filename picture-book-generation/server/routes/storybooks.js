@@ -27,12 +27,13 @@ router.get('/', (req, res) => {
 // GET /:id - Get single storybook details
 router.get('/:id', (req, res) => {
   try {
+    console.log(`[storybooks] GET /${req.params.id} by user ${req.user.id}`);
     const stmt = db.prepare(`
       SELECT id, user_id, title, story_config, pages, status, created_at, updated_at
       FROM storybooks
       WHERE id = ? AND user_id = ?
     `);
-    const storybook = stmt.get(req.params.id, req.user.id);
+    const storybook = stmt.get(Number(req.params.id), req.user.id);
 
     if (!storybook) {
       return res.status(404).json({ error: 'Storybook not found' });

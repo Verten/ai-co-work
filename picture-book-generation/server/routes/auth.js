@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import db from '../db/index.js';
 
 const router = express.Router();
-const SESSION_SECRET = process.env.SESSION_SECRET || 'your-secret-key';
+const SESSION_SECRET = process.env.SESSION_SECRET || 'your-secret-key-change-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 // POST /register - User registration

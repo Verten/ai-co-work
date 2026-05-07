@@ -1,8 +1,12 @@
-const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
-if (!MINIMAX_API_KEY) {
-  throw new Error('MINIMAX_API_KEY environment variable is required');
-}
 const MINIMAX_API_BASE = 'https://api.minimaxi.com';
+
+function getMinimaxApiKey() {
+  const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
+  if (!MINIMAX_API_KEY) {
+    throw new Error('MINIMAX_API_KEY environment variable is required');
+  }
+  return MINIMAX_API_KEY;
+}
 
 /**
  * Generate story text using MiniMax AI
@@ -10,6 +14,7 @@ const MINIMAX_API_BASE = 'https://api.minimaxi.com';
  * @returns {Promise<string>} Generated text content
  */
 async function generateStoryText(messages) {
+  const MINIMAX_API_KEY = getMinimaxApiKey();
   const response = await fetch(`${MINIMAX_API_BASE}/anthropic/v1/messages`, {
     method: 'POST',
     headers: {
@@ -22,7 +27,7 @@ async function generateStoryText(messages) {
       temperature: 0.8,
       messages,
     }),
-    signal: AbortSignal.timeout(60000),
+    signal: AbortSignal.timeout(120000),
   });
 
   if (!response.ok) {
@@ -43,6 +48,7 @@ async function generateStoryText(messages) {
  * @returns {Promise<{url: string}>} Generated image URL
  */
 async function generateImage(prompt, style) {
+  const MINIMAX_API_KEY = getMinimaxApiKey();
   const response = await fetch(`${MINIMAX_API_BASE}/v1/image_generation`, {
     method: 'POST',
     headers: {
@@ -60,7 +66,7 @@ async function generateImage(prompt, style) {
       response_format: 'url',
       prompt_optimizer: true,
     }),
-    signal: AbortSignal.timeout(60000),
+    signal: AbortSignal.timeout(120000),
   });
 
   if (!response.ok) {
@@ -69,10 +75,12 @@ async function generateImage(prompt, style) {
   }
 
   const data = await response.json();
-  return { url: data.url };
+  console.log(`[aiService] image response:`, JSON.stringify(data));
+  const url = data.data?.image_urls?.[0] || null;
+  return { url };
 }
 
-module.exports = {
+export {
   generateStoryText,
   generateImage,
 };

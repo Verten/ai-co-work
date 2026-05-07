@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generate } from '../api';
+import { useAuth } from '../context/AuthContext';
+import { generate, events } from '../api';
 import './RandomGeneratePage.css';
 
 const CHARACTERS = [
@@ -50,6 +51,7 @@ const STYLES = [
 ];
 
 const RandomGeneratePage = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     character: '',
@@ -59,6 +61,7 @@ const RandomGeneratePage = () => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [progressLogs, setProgressLogs] = useState([]);
 
   const handleSelect = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -90,11 +93,21 @@ const RandomGeneratePage = () => {
 
     setIsGenerating(true);
     setError('');
+    setProgressLogs([]);
+
+    let eventSource = null;
+
+    // Connect to SSE for progress using userId
+    eventSource = events.connectProgress(user.id, (msg) => {
+      setProgressLogs((prev) => [...prev.slice(-20), msg]);
+    });
 
     try {
       const result = await generate.random({ character, setting, theme, style });
+      if (eventSource) eventSource.close();
       navigate(`/preview/${result.id}`);
     } catch (err) {
+      if (eventSource) eventSource.close();
       setError(err.message || '生成失败，请稍后重试');
       setIsGenerating(false);
     }
@@ -176,6 +189,17 @@ const RandomGeneratePage = () => {
         </div>
 
         {error && <div className="error-message">{error}</div>}
+
+        {isGenerating && progressLogs.length > 0 && (
+          <div className="progress-logs">
+            <h4>生成进度</h4>
+            <div className="progress-log-list">
+              {progressLogs.map((log, i) => (
+                <div key={i} className="progress-log-item">{log}</div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="generate-actions">
           <button

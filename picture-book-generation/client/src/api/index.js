@@ -13,6 +13,30 @@ const handleResponse = async (response) => {
   return response.json();
 };
 
+export const events = {
+  connectProgress: (userId, onMessage) => {
+    const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+    const host = window.location.host;
+    const url = `${protocol}//${host}/api/generate/events?userId=${userId}`;
+    const eventSource = new EventSource(url);
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        onMessage(data);
+      } catch (e) {
+        onMessage(event.data);
+      }
+    };
+
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
+    return eventSource;
+  },
+};
+
 export const auth = {
   login: async (email, password) => {
     const response = await fetch(`${API_BASE}/auth/login`, {

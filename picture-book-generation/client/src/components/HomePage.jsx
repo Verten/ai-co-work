@@ -4,20 +4,35 @@ import { useAuth } from '../context/AuthContext';
 import './HomePage.css';
 
 const HomePage = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleCardClick = (path) => {
     navigate(path);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <div className="home-page">
       <div className="home-container">
         {user && (
-          <div className="welcome-section">
-            <h1 className="welcome-title">Welcome back, {user.username}!</h1>
-            <p className="welcome-subtitle">Create magical picture books with AI</p>
+          <div className="header-bar">
+            <div className="welcome-section">
+              <h1 className="welcome-title">Welcome back, {user.username}!</h1>
+              <p className="welcome-subtitle">Create magical picture books with AI</p>
+            </div>
+            <div className="header-actions">
+              <button className="btn btn-profile" onClick={() => navigate('/profile')}>
+                My Storybooks
+              </button>
+              <button className="btn btn-logout" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
           </div>
         )}
 

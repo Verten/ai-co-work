@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middleware/auth.js';
 import storyService from '../services/storyService.js';
+import progressEmitter from '../services/events.js';
 import db from '../db/index.js';
 
 const router = express.Router();
@@ -12,6 +13,8 @@ router.use(authMiddleware);
  * POST /chat - Generate story via chat mode (description + style)
  */
 router.post('/chat', async (req, res) => {
+  const emit = (data) => progressEmitter.emit('progress', `user_${req.user.id}`, data);
+
   try {
     const { description, style, title } = req.body;
 
@@ -35,7 +38,9 @@ router.post('/chat', async (req, res) => {
 
     try {
       // Generate the complete story with images
-      const story = await storyService.generateStory(storyConfig, 'chat');
+      const story = await storyService.generateStory(storyConfig, 'chat', {
+        progressCallback: emit,
+      });
 
       // Update storybook with generated content and completed status
       const updateStmt = db.prepare(`
@@ -79,6 +84,8 @@ router.post('/chat', async (req, res) => {
  * POST /random - Generate story via random mode (character + setting + theme + style)
  */
 router.post('/random', async (req, res) => {
+  const emit = (data) => progressEmitter.emit('progress', `user_${req.user.id}`, data);
+
   try {
     const { character, setting, theme, style, title } = req.body;
 
@@ -102,7 +109,11 @@ router.post('/random', async (req, res) => {
 
     try {
       // Generate the complete story with images
-      const story = await storyService.generateStory(storyConfig, 'random');
+      const story = await storyService.generateStory(storyConfig, 'random', {
+        progressCallback: emit,
+      });
+
+      console.log('[generate] story.pages:', JSON.stringify(story.pages));
 
       // Update storybook with generated content and completed status
       const updateStmt = db.prepare(`
@@ -119,6 +130,7 @@ router.post('/random', async (req, res) => {
         WHERE id = ?
       `);
       const updated = fetchStmt.get(storybookId);
+      console.log('[generate] fetched storybook:', JSON.stringify(updated));
 
       res.json({
         ...updated,

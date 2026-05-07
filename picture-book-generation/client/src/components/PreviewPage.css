@@ -105,7 +105,7 @@
 
 .page-image-container {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 4;
   background: #f0f0f0;
   overflow: hidden;
 }
@@ -113,7 +113,8 @@
 .page-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f8f8f8;
 }
 
 .page-image-placeholder {

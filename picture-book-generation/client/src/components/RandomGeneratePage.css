@@ -153,6 +153,39 @@
   text-align: center;
 }
 
+.progress-logs {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.progress-logs h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.progress-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.progress-log-item {
+  font-size: 0.8rem;
+  color: #333;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.progress-log-item:last-child {
+  border-bottom: none;
+}
+
 .generate-actions {
   display: flex;
   justify-content: center;

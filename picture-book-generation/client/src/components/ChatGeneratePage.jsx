@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { generate } from '../api';
+import { generate, events } from '../api';
 import './ChatGeneratePage.css';
 
 const CHARACTERS = [
@@ -66,6 +66,7 @@ const ChatGeneratePage = () => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [progressLogs, setProgressLogs] = useState([]);
 
   const step = STEPS[currentStep];
 
@@ -110,14 +111,21 @@ const ChatGeneratePage = () => {
 
     setIsGenerating(true);
     setError('');
+    setProgressLogs([]);
+
+    // Connect to SSE for progress using userId
+    const eventSource = events.connectProgress(user.id, (msg) => {
+      setProgressLogs((prev) => [...prev.slice(-20), msg]);
+    });
 
     try {
       const result = await generate.chat(
         { description: fullDescription, style: STYLE_MAP[formData.style] || 'watercolor' },
-        user.token
       );
+      eventSource.close();
       navigate(`/preview/${result.id}`);
     } catch (err) {
+      eventSource.close();
       setError(err.message || '生成失败，请稍后重试');
       setIsGenerating(false);
     }
@@ -238,6 +246,17 @@ const ChatGeneratePage = () => {
           <h2 className="step-title">{renderStepTitle()}</h2>
 
           {error && <div className="error-message">{error}</div>}
+
+          {isGenerating && progressLogs.length > 0 && (
+            <div className="progress-logs">
+              <h4>生成进度</h4>
+              <div className="progress-log-list">
+                {progressLogs.map((log, i) => (
+                  <div key={i} className="progress-log-item">{log}</div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {renderOptions()}
 
